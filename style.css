@@ -1,0 +1,19 @@
+.left {
+  border: 2px solid black;
+  height: 450px;
+  width: 765px;
+  right: 177px;
+  position: absolute;
+  align-self: center;
+}
+.cont{
+  display: flex;
+  position: relative;
+  height: 100vh;
+}
+
+.right{
+  height: 600px;
+  width: 270px;
+  border: 2px solid orange;
+}
