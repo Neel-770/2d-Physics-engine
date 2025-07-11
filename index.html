@@ -1,56 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Physics Simulator Controls</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
+  <title>Physics Simulator</title>
 </head>
-
 <body>
-  <button id="btn">spawn object</button>
-  <div class="cont">
-    <div class="right">
-      <h2>System settings</h2>
-      <div class="controls">
-        <div class="control-group">
-          <label for="gravityRange">Gravity:</label>
-          <input type="range" id="gravityRange" name="gravity" min="0" max="1000" step="0.1" value="9.8">
-          <input type="number" id="gravityText" class="value-input" min="0" max="1000" step="0.1" value="9.8">
-        </div>
-
-        <div class="control-group">
-          <label for="frictionRange">Friction:</label>
-          <input type="range" id="frictionRange" name="friction" min="0" max="0.99" step="0.01" value="0.5">
-          <input type="number" id="frictionText" class="value-input" min="0" max="0.99" step="0.01" value="0.5">
-        </div>
-        <div class="control-group">
-          <label for="dragRange">Air Resistance:</label>
-          <input type="range" id="dragRange" name="drag" min="0" max="1000" step="0.01" value="0.47">
-          <input type="number" id="dragText" class="value-input" min="0" max="1000" step="0.01" value="0.47">
-        </div>
-
-        <h2>object settings</h2>
-        <div class="control-group">
-          <label for="massRange">Mass:</label>
-          <input type="range" id="massRange" name="mass" min="1" max="100" step="1" value="10">
-          <input type="number" id="massText" class="value-input" min="1" max="100" step="1" value="10">
-        </div>
-
-        <div class="control-group">
-          <label for="densityRange">Density:</label>
-          <input type="range" id="densityRange" name="density" min="1" max="10000" step="10" value="1">
-          <input type="number" id="densityText" class="value-input" min="1" max="10000" step="10" value="1">
-        </div>
+  <div class="container">
+    <div class="controls">
+      <h2>System Settings</h2>
+      <div class="control-group">
+        <label>Gravity:
+          <input type="range" id="gravityRange" min="0" max="1000" step="0.1" value="9.8">
+          <input type="number" id="gravityText" min="0" max="1000" step="0.1" value="9.8">
+        </label>
       </div>
+      <div class="control-group">
+        <label>Friction:
+          <input type="range" id="frictionRange" min="0" max="0.99" step="0.01" value="0.5">
+          <input type="number" id="frictionText" min="0" max="0.99" step="0.01" value="0.5">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Air Resistance:
+          <input type="range" id="dragRange" min="0" max="1000" step="0.01" value="0.47">
+          <input type="number" id="dragText" min="0" max="1000" step="0.01" value="0.47">
+        </label>
+      </div>
+
+      <h2>Object Settings</h2>
+      <div class="control-group">
+        <label>Mass:
+          <input type="range" id="massRange" min="1" max="100" step="1" value="10">
+          <input type="number" id="massText" min="1" max="100" step="1" value="10">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Density:
+          <input type="range" id="densityRange" min="1" max="10000" step="10" value="1">
+          <input type="number" id="densityText" min="1" max="10000" step="10" value="1">
+        </label>
+      </div>
+
+      <button id="btn">Spawn Object</button>
     </div>
-    <div class="left">
-      <canvas id="myCanvas" height="450" width="765"></canvas>
+    
+    <div class="canvas-wrapper">
+      <canvas id="myCanvas"></canvas>
     </div>
   </div>
 
   <script type="module" src="main.js"></script>
 </body>
-
 </html>
