@@ -1,82 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="style.css" />
   <title>Physics Simulator</title>
 </head>
-
 <body>
   <div class="container">
     <div class="controls">
       <h2>System Settings</h2>
+
       <div class="control-group">
-        <label>Gravity:
-          <input type="range" id="gravityRange" min="0" max="1000" step="0.1" value="9.8">
-          <input type="number" id="gravityText" min="0" max="1000" step="0.1" value="9.8">
-        </label>
+        <label for="gravityRange">Gravity (m/s²)</label>
+        <input type="range" id="gravityRange" min="0" max="100" step="0.1" value="9.8">
+        <input type="number" id="gravityText" min="0" max="100" step="0.1" value="9.8">
       </div>
+
       <div class="control-group">
-        <label>Friction:
-          <input type="range" id="frictionRange" min="0" max="0.99" step="0.01" value="0.5">
-          <input type="number" id="frictionText" min="0" max="0.99" step="0.01" value="0.5">
-        </label>
+        <label for="frictionRange">Friction</label>
+        <input type="range" id="frictionRange" min="0" max="0.99" step="0.01" value="0.5">
+        <input type="number" id="frictionText" min="0" max="0.99" step="0.01" value="0.5">
       </div>
+
       <div class="control-group">
-        <label>Air Resistance:
-          <input type="range" id="dragRange" min="0" max="1000" step="0.01" value="0.47">
-          <input type="number" id="dragText" min="0" max="1000" step="0.01" value="0.47">
-        </label>
+        <label for="dragRange">Air Resistance (drag)</label>
+        <input type="range" id="dragRange" min="0" max="10" step="0.01" value="0.47">
+        <input type="number" id="dragText" min="0" max="10" step="0.01" value="0.47">
       </div>
 
       <h2>Object Settings</h2>
+
       <div class="control-group">
-        <label>Material:
-          <select id="materialSelect">
-            <option value="ping-pong">Ping Pong Ball</option>
-            <option value="tennis">Tennis Ball</option>
-            <option value="golf">Golf Ball</option>
-            <option value="baseball">Baseball</option>
-            <option value="billiard">Billiard Ball</option>
-            <option value="basketball">Basketball</option>
-            <option value="marble">Marble</option>
-            <option value="steel-bearing">Steel Ball Bearing</option>
-            <option value="bowling">Bowling Ball</option>
-            <option value="lead-shot">Lead Shot</option>
-          </select>
-        </label>
-      </div>
-      <div class="control-group">
-        <label>Mass (kg):
-          <input type="range" id="massRange" min="0.001" max="10" step="0.001" value="0.1">
-          <input type="number" id="massText" min="0.001" max="10" step="0.001" value="0.1">
-        </label>
-      </div>
-      <div class="control-group">
-        <label>Density (kg/m³):
-          <input type="range" id="densityRange" min="500" max="12000" step="10" value="2000">
-          <input type="number" id="densityText" min="500" max="12000" step="10" value="2000">
-        </label>
-      </div>
-      <div class="control-group">
-        <label>Radius (m):
-          <input type="range" id="radiusRange" min="0.05" max="0.30" step="0.01" value="0.10">
-          <input type="number" id="radiusText" min="0.05" max="0.30" step="0.01" value="0.10">
-        </label>
+        <label for="materialSelect">Material</label>
+        <select id="materialSelect">
+          <option value="custom">Custom</option>
+          <option value="ping-pong">Ping Pong Ball</option>
+          <option value="tennis">Tennis Ball</option>
+          <option value="golf">Golf Ball</option>
+          <option value="baseball">Baseball</option>
+          <option value="billiard">Billiard Ball</option>
+          <option value="basketball">Basketball</option>
+          <option value="marble">Marble</option>
+          <option value="steel-bearing">Steel Ball Bearing</option>
+          <option value="bowling">Bowling Ball</option>
+          <option value="lead-shot">Lead Shot</option>
+        </select>
       </div>
 
+      <div class="control-group">
+        <label for="massRange">Mass (kg)</label>
+        <input type="range" id="massRange" min="0.001" max="10000" step="0.001" value="0.1">
+        <input type="number" id="massText" min="0.001" max="10000" step="0.001" value="0.1">
+      </div>
+
+      <div class="control-group">
+        <label for="densityRange">Density (kg/m³)</label>
+        <input type="range" id="densityRange" min="500" max="12000" step="10" value="2000">
+        <input type="number" id="densityText" min="500" max="12000" step="10" value="2000">
+      </div>
+
+      <div class="control-group">
+        <label for="radiusRange">Radius (m)</label>
+        <input type="range" id="radiusRange" min="0.01" max="1" step="0.01" value="0.10">
+        <input type="number" id="radiusText" min="0.01" max="1" step="0.01" value="0.10">
+      </div>
 
       <button id="btn">Spawn Object</button>
     </div>
 
     <div class="canvas-wrapper">
-      <canvas id="myCanvas"></canvas>
+      <canvas id="myCanvas" width="800" height="600"></canvas>
     </div>
   </div>
 
   <script type="module" src="main.js"></script>
 </body>
-
 </html>

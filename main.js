@@ -1,22 +1,23 @@
-// Importing functions from other modules
-import { createPhysicsState, MATERIALS } from './shared.js'; // Creates a physics state object
+// --- Importing Dependencies ---
 
+// These functions handle physics updates, collisions, and spawning
 import {
-  updatePhysics,           // Applies physics (forces, velocity, position update)
-  handleBallCollisions,    // Handles ball-to-ball collisions
-  spawnBall,               // Spawns a new ball with given config
-  getBalls                 // Returns current list of balls
+  updatePhysics,
+  handleBallCollisions,
+  spawnBall,
+  getBalls
 } from './objects.js';
 
+// These functions handle canvas setup, rendering, environment controls, and reading/writing values
 import {
-  initializeCanvas,        // Sets up canvas size and context
-  clearCanvas,              // Clears the canvas each frame
-  render,                   // Renders all objects (balls, velocity vectors)
-  handleWallCollisions,     // Handles collisions with walls
-  getGravityValue,          // Gets gravity value from input
-  getFrictionValue,         // Gets friction value from input
-  getMassValue,             // Gets current object mass from input
-  getDragCoefficient,       // Gets air resistance value from input
+  initializeCanvas,
+  clearCanvas,
+  render,
+  handleWallCollisions,
+  getGravityValue,
+  getFrictionValue,
+  getMassValue,
+  getDragCoefficient,
   getDensityValue,
   getRadiusValue,
   setMassValue,
@@ -25,106 +26,15 @@ import {
   getMaterialSelection
 } from './environment.js';
 
-let lastTime = 0; // Used to calculate deltaTime between frames
+// These provide shared constants (like physics units) and material presets
+import {
+  createPhysicsState,
+  MATERIALS
+} from './shared.js';
 
-/**
- * Syncs all controls with material-first approach
- */
-function syncControls() {
-  let isUpdating = false;
+let lastTime = 0; // Timestamp of last frame for deltaTime calculation
 
-  // Basic sync for non-physics controls
-  const nonPhysicsGroups = document.querySelectorAll('.control-group:not(:has(#massRange, #densityRange, #radiusRange))');
-  nonPhysicsGroups.forEach(group => {
-    const [range, number] = group.querySelectorAll('input');
-    if (range && number) {
-      range.addEventListener('input', () => number.value = range.value);
-      number.addEventListener('input', () => {
-        let v = parseFloat(number.value);
-        if (isNaN(v)) v = parseFloat(range.value);
-        v = Math.min(Math.max(v, parseFloat(range.min)), parseFloat(range.max));
-        number.value = range.value = v;
-      });
-    }
-  });
-
-  // Physics control sync (mass, density, radius)
-  const physicsControls = ['mass', 'density', 'radius'];
-  physicsControls.forEach(control => {
-    const range = document.getElementById(control + 'Range');
-    const number = document.getElementById(control + 'Text');
-
-    range.addEventListener('input', () => number.value = range.value);
-    number.addEventListener('input', () => {
-      let v = parseFloat(number.value);
-      if (isNaN(v)) v = parseFloat(range.value);
-      v = Math.min(Math.max(v, parseFloat(range.min)), parseFloat(range.max));
-      number.value = range.value = v;
-    });
-  });
-
-  // Material selection handler
-  const materialSelect = document.getElementById('materialSelect');
-  materialSelect.addEventListener('change', () => {
-    if (isUpdating) return;
-    isUpdating = true;
-
-    const materialKey = materialSelect.value;
-    const material = MATERIALS[materialKey];
-
-    setDensityValue(material.density);
-    setRadiusValue(material.radius);
-    setMassValue(material.mass); // Use pre-calculated realistic mass
-
-    isUpdating = false;
-  });
-
-  // Manual radius change (user overrides material)
-  const radiusRange = document.getElementById('radiusRange');
-  const radiusText = document.getElementById('radiusText');
-
-  function onRadiusChange() {
-    if (isUpdating) return;
-    isUpdating = true;
-
-    const radius = parseFloat(radiusRange.value);
-    const density = getDensityValue();
-    const newMass = density * Math.PI * radius * radius;
-
-    setMassValue(newMass);
-    isUpdating = false;
-  }
-
-  // Manual mass change (user overrides material)
-  const massRange = document.getElementById('massRange');
-  const massText = document.getElementById('massText');
-
-  function onMassChange() {
-    if (isUpdating) return;
-    isUpdating = true;
-
-    const mass = parseFloat(massRange.value);
-    const density = getDensityValue();
-    const newRadius = Math.sqrt(mass / (density * Math.PI));
-
-    setRadiusValue(newRadius);
-    isUpdating = false;
-  }
-
-  // Add the physics binding listeners
-  radiusRange.addEventListener('input', onRadiusChange);
-  radiusText.addEventListener('input', onRadiusChange);
-  massRange.addEventListener('input', onMassChange);
-  massText.addEventListener('input', onMassChange);
-
-  // Initialize with first material
-  materialSelect.dispatchEvent(new Event('change'));
-}
-
-/**
- * Combines current input settings into a physics state object
- * This gets passed into physics and collision functions.
- */
+// Creates a fresh physics state object (gravity, friction, drag) for each update cycle
 function getCurrentPhysicsState() {
   return createPhysicsState(
     getGravityValue(),
@@ -133,72 +43,171 @@ function getCurrentPhysicsState() {
   );
 }
 
-/**
- * Main animation loop - runs every frame
- * Handles:
- *  - Clearing canvas
- *  - Applying physics
- *  - Handling collisions
- *  - Drawing everything
- */
+// Main animation loop called by requestAnimationFrame
 function update(currentTime) {
-  // First frame skip delta calculation
   if (!lastTime) lastTime = currentTime;
-
-  // Calculate time difference in seconds
-  const deltaTime = (currentTime - lastTime) / 1000;
+  const deltaTime = (currentTime - lastTime) / 1000; // Convert ms to seconds
   lastTime = currentTime;
 
-  // Clear canvas
-  clearCanvas();
+  clearCanvas(); // Clear previous frame
 
-  // Get updated physics state and pass deltaTime
-  const physics = getCurrentPhysicsState();
-  physics.deltaTime = deltaTime;
+  const physics = getCurrentPhysicsState(); // Get current settings
+  physics.deltaTime = deltaTime; // Pass frame time to physics
 
-  // Step simulation forward
-  updatePhysics(deltaTime, physics); // Update positions, velocities
-  handleBallCollisions();            // Detect & resolve ball-to-ball
-  const balls = getBalls();          // Get active balls
-  handleWallCollisions(balls, physics); // Handle canvas boundary collisions
-  render(balls);                     // Draw everything
+  updatePhysics(deltaTime, physics); // Update position, velocity, drag
+  handleBallCollisions(); // Handle ball-ball collisions
+  const balls = getBalls(); // Fetch current ball list
+  handleWallCollisions(balls, physics); // Handle wall-ground collisions
+  render(balls); // Draw everything
 
-  // Continue loop
-  requestAnimationFrame(update);
+  requestAnimationFrame(update); // Schedule next frame
 }
 
-/**
- * Handles spawning of a new ball using current mass and radius settings.
- */
+// Called when the "Spawn Object" button is clicked
 function handleSpawnBall() {
   const canvas = document.getElementById('myCanvas');
   const mass = getMassValue();
-  const radiusM = getRadiusValue(); // Now dynamic
+  const radiusM = getRadiusValue();
 
   const config = {
-    x: canvas.width / 2 + (Math.random() - 0.5) * 100,
+    x: canvas.width / 2 + (Math.random() - 0.5) * 100, // Spawn near center
     y: canvas.height / 10 + (Math.random() - 0.5) * 50,
     radiusM,
     mass
   };
 
-  spawnBall(config);
+  spawnBall(config); // Add a new ball to the simulation
 }
 
-/**
- * Initializes everything on page load:
- * - Canvas setup
- * - Input sync
- * - Button handler
- * - Starts animation loop
- */
+// Initializes canvas, control syncing, event listeners, and starts the animation loop
 function initialize() {
   initializeCanvas(); // Prepare canvas
-  syncControls();     // Connect sliders + text boxes
-  document.getElementById('btn').addEventListener('click', handleSpawnBall); // Spawn handler
-  requestAnimationFrame(update); // Begin animation
-  handleSpawnBall(); // Auto-spawn first ball
+  syncControls(); // Connect UI sliders and dropdowns
+  document.getElementById('btn').addEventListener('click', handleSpawnBall); // Button handler
+  requestAnimationFrame(update); // Start simulation
+  handleSpawnBall(); // Add first object immediately
 }
 
-// Start the app when page is ready
-document.addEventListener('DOMContentLoaded', initialize);
+document.addEventListener('DOMContentLoaded', initialize); // Start when page loads
+
+
+// --- UI Control Sync Logic ---
+
+function syncControls() {
+  let isUpdating = false; // Prevents recursion when updating linked controls
+  let enableRealisticBinding = false; // If true, sliders are linked based on real mass-density-radius formula
+
+  // Sync every range-number pair (e.g., gravity slider and number input)
+  const controlGroups = document.querySelectorAll('.control-group');
+  controlGroups.forEach(group => {
+    const [range, number] = group.querySelectorAll('input[type="range"], input[type="number"]');
+    if (range && number) {
+      // When slider changes, update number box
+      range.addEventListener('input', () => number.value = range.value);
+
+      // When number changes, validate and update slider
+      number.addEventListener('input', () => {
+        let v = parseFloat(number.value);
+        if (isNaN(v)) v = parseFloat(range.value);
+        v = Math.min(Math.max(v, parseFloat(range.min)), parseFloat(range.max));
+        range.value = number.value = v;
+      });
+    }
+  });
+
+  // Fetch references to radius, mass, density inputs
+  const materialSelect = document.getElementById('materialSelect');
+  const radiusRange = document.getElementById('radiusRange');
+  const radiusText = document.getElementById('radiusText');
+  const massRange = document.getElementById('massRange');
+  const massText = document.getElementById('massText');
+  const densityRange = document.getElementById('densityRange');
+  const densityText = document.getElementById('densityText');
+
+  // Recalculates mass when radius or density changes
+  function updateMassFromRadiusAndDensity() {
+    const r = parseFloat(radiusRange.value);
+    const d = parseFloat(densityRange.value);
+    const m = Math.PI * r * r * d;
+    setMassValue(m);
+  }
+
+  // Recalculates radius when mass or density changes
+  function updateRadiusFromMassAndDensity() {
+    const m = parseFloat(massRange.value);
+    const d = parseFloat(densityRange.value);
+    const r = Math.sqrt(m / (Math.PI * d));
+    setRadiusValue(r);
+  }
+
+  function updateMassFromDensityAndRadius() {
+    updateMassFromRadiusAndDensity(); // Alias function
+  }
+
+  // Link sliders for realistic physics when enabled
+  radiusRange.addEventListener('input', () => {
+    if (isUpdating || !enableRealisticBinding) return;
+    isUpdating = true;
+    updateMassFromRadiusAndDensity();
+    isUpdating = false;
+  });
+
+  radiusText.addEventListener('input', () => {
+    if (isUpdating || !enableRealisticBinding) return;
+    isUpdating = true;
+    updateMassFromRadiusAndDensity();
+    isUpdating = false;
+  });
+
+  massRange.addEventListener('input', () => {
+    if (isUpdating || !enableRealisticBinding) return;
+    isUpdating = true;
+    updateRadiusFromMassAndDensity();
+    isUpdating = false;
+  });
+
+  massText.addEventListener('input', () => {
+    if (isUpdating || !enableRealisticBinding) return;
+    isUpdating = true;
+    updateRadiusFromMassAndDensity();
+    isUpdating = false;
+  });
+
+  densityRange.addEventListener('input', () => {
+    if (isUpdating || !enableRealisticBinding) return;
+    isUpdating = true;
+    updateMassFromDensityAndRadius();
+    isUpdating = false;
+  });
+
+  densityText.addEventListener('input', () => {
+    if (isUpdating || !enableRealisticBinding) return;
+    isUpdating = true;
+    updateMassFromDensityAndRadius();
+    isUpdating = false;
+  });
+
+  // Handle dropdown material selection
+  materialSelect.addEventListener('change', () => {
+    if (isUpdating) return;
+    isUpdating = true;
+
+    const materialKey = materialSelect.value;
+
+    if (materialKey !== 'custom') {
+      // Set density, radius, and mass from material preset
+      const mat = MATERIALS[materialKey];
+      setDensityValue(mat.density);
+      setRadiusValue(mat.radius);
+      setMassValue(mat.mass);
+      enableRealisticBinding = true; // Lock sliders together
+    } else {
+      enableRealisticBinding = false; // Free sliders when "custom"
+    }
+
+    isUpdating = false;
+  });
+
+  // Trigger material change once on load to apply defaults
+  materialSelect.dispatchEvent(new Event('change'));
+}
