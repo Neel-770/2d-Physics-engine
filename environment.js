@@ -228,3 +228,59 @@ export function getDragCoefficient() {
     const dragInput = document.getElementById('dragRange');
     return parseFloat(dragInput.value);
 }
+
+/**
+ * Gets the current radius value from the slider
+ * @returns {number} Radius in meters
+ */
+export function getRadiusValue() {
+    const radiusInput = document.getElementById('radiusRange');
+    return parseFloat(radiusInput.value);
+}
+
+
+
+/**
+ * Sets the mass value in both slider and text input
+ * @param {number} value - Mass in kg
+ */
+export function setMassValue(value) {
+    const massRange = document.getElementById('massRange');
+    const massText = document.getElementById('massText');
+    const clampedValue = Math.min(Math.max(value, parseFloat(massRange.min)), parseFloat(massRange.max));
+    massRange.value = clampedValue.toFixed(3); // 3 decimal places for grams
+    massText.value = clampedValue.toFixed(3);
+}
+
+/**
+ * Sets the radius value in both slider and text input
+ * @param {number} value - Radius in meters
+ */
+export function setRadiusValue(value) {
+    const radiusRange = document.getElementById('radiusRange');
+    const radiusText = document.getElementById('radiusText');
+    const clampedValue = Math.min(Math.max(value, parseFloat(radiusRange.min)), parseFloat(radiusRange.max));
+    radiusRange.value = clampedValue.toFixed(2); // 2 decimal places for cm precision
+    radiusText.value = clampedValue.toFixed(2);
+}
+
+/**
+ * Sets the density value in both slider and text input
+ * @param {number} value - Density in kg/m³
+ */
+export function setDensityValue(value) {
+    const densityRange = document.getElementById('densityRange');
+    const densityText = document.getElementById('densityText');
+    const clampedValue = Math.min(Math.max(value, parseFloat(densityRange.min)), parseFloat(densityRange.max));
+    densityRange.value = Math.round(clampedValue); // Whole numbers for density
+    densityText.value = Math.round(clampedValue);
+}
+
+/**
+ * Gets the current material selection
+ * @returns {string} Material key
+ */
+export function getMaterialSelection() {
+    const materialSelect = document.getElementById('materialSelect');
+    return materialSelect.value;
+}
