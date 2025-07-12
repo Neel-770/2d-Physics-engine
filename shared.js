@@ -89,3 +89,17 @@ export function clamp(value, min, max) {
 export function generateBallColor(index) {
     return `hsl(${(index * 50) % 360}, 70%, 50%)`;
 }
+
+
+export const MATERIALS = {
+  'ping-pong': { name: 'Ping Pong Ball', density: 2150, radius: 0.10, mass: 0.067 },
+  'tennis': { name: 'Tennis Ball', density: 1700, radius: 0.16, mass: 0.137 },
+  'golf': { name: 'Golf Ball', density: 1660, radius: 0.11, mass: 0.063 },
+  'baseball': { name: 'Baseball', density: 680, radius: 0.18, mass: 0.069 },
+  'billiard': { name: 'Billiard Ball', density: 1830, radius: 0.14, mass: 0.113 },
+  'basketball': { name: 'Basketball', density: 1320, radius: 0.24, mass: 0.252 },
+  'marble': { name: 'Marble', density: 2700, radius: 0.08, mass: 0.043 },
+  'steel-bearing': { name: 'Steel Ball Bearing', density: 7850, radius: 0.12, mass: 0.355 },
+  'bowling': { name: 'Bowling Ball', density: 1900, radius: 0.22, mass: 0.290 },
+  'lead-shot': { name: 'Lead Shot', density: 11340, radius: 0.06, mass: 0.043 }
+};

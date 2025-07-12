@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
   <title>Physics Simulator</title>
 </head>
+
 <body>
   <div class="container">
     <div class="controls">
@@ -31,21 +33,44 @@
 
       <h2>Object Settings</h2>
       <div class="control-group">
-        <label>Mass:
-          <input type="range" id="massRange" min="1" max="100" step="1" value="10">
-          <input type="number" id="massText" min="1" max="100" step="1" value="10">
+        <label>Material:
+          <select id="materialSelect">
+            <option value="ping-pong">Ping Pong Ball</option>
+            <option value="tennis">Tennis Ball</option>
+            <option value="golf">Golf Ball</option>
+            <option value="baseball">Baseball</option>
+            <option value="billiard">Billiard Ball</option>
+            <option value="basketball">Basketball</option>
+            <option value="marble">Marble</option>
+            <option value="steel-bearing">Steel Ball Bearing</option>
+            <option value="bowling">Bowling Ball</option>
+            <option value="lead-shot">Lead Shot</option>
+          </select>
         </label>
       </div>
       <div class="control-group">
-        <label>Density:
-          <input type="range" id="densityRange" min="1" max="10000" step="10" value="1">
-          <input type="number" id="densityText" min="1" max="10000" step="10" value="1">
+        <label>Mass (kg):
+          <input type="range" id="massRange" min="0.001" max="10" step="0.001" value="0.1">
+          <input type="number" id="massText" min="0.001" max="10" step="0.001" value="0.1">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Density (kg/m³):
+          <input type="range" id="densityRange" min="500" max="12000" step="10" value="2000">
+          <input type="number" id="densityText" min="500" max="12000" step="10" value="2000">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Radius (m):
+          <input type="range" id="radiusRange" min="0.05" max="0.30" step="0.01" value="0.10">
+          <input type="number" id="radiusText" min="0.05" max="0.30" step="0.01" value="0.10">
         </label>
       </div>
 
+
       <button id="btn">Spawn Object</button>
     </div>
-    
+
     <div class="canvas-wrapper">
       <canvas id="myCanvas"></canvas>
     </div>
@@ -53,4 +78,5 @@
 
   <script type="module" src="main.js"></script>
 </body>
+
 </html>
