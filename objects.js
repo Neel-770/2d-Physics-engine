@@ -176,8 +176,9 @@ function resolveBallCollision(b1, b2) {
  * @param {number} config.radiusM - Radius in meters
  * @param {number} config.mass - Mass in kg
  */
-export function spawnBall(config) {
+export function spawnBall(config, presetName = 'custom') {
     const newBall = createBall(config.x, config.y, config.radiusM, config.mass);
+    newBall.preset = presetName
     balls.push(newBall);
 }
 
@@ -204,4 +205,20 @@ export function getBallCount() {
  */
 export function clearAllBalls() {
     balls.length = 0; // Clear the array
+}
+
+/**
+ * Finds the ball at a given (x, y) pixel coordinate.
+ * @param {number} clickX - Click X coordinate in pixels
+ * @param {number} clickY - Click Y coordinate in pixels
+ * @returns {Ball|null} - Returns the clicked ball or null
+ */
+export function getBallAtPosition(clickX, clickY) {
+    for (let ball of balls) {
+        const dx = clickX - ball.x;
+        const dy = clickY - ball.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist <= ball.radius) return ball;
+    }
+    return null;
 }

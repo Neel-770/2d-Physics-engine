@@ -5,7 +5,8 @@ import {
   updatePhysics,
   handleBallCollisions,
   spawnBall,
-  getBalls
+  getBalls,
+  getBallAtPosition
 } from './objects.js';
 
 // These functions handle canvas setup, rendering, environment controls, and reading/writing values
@@ -68,7 +69,6 @@ function handleSpawnBall() {
   const canvas = document.getElementById('myCanvas');
   const mass = getMassValue();
   const radiusM = getRadiusValue();
-
   const config = {
     x: canvas.width / 2 + (Math.random() - 0.5) * 100, // Spawn near center
     y: canvas.height / 10 + (Math.random() - 0.5) * 50,
@@ -76,13 +76,49 @@ function handleSpawnBall() {
     mass
   };
 
-  spawnBall(config); // Add a new ball to the simulation
+  spawnBall(config, getMaterialSelection()); // Add a new ball to the simulation
 }
+
+function setupBallClickHandler() {
+  const canvas = document.getElementById('myCanvas');
+  const infoDiv = document.getElementById('ball-details');
+
+  canvas.addEventListener('click', (event) => {
+    canvas.focus();
+    const rect = canvas.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const clickY = event.clientY - rect.top;
+
+    const ball = getBallAtPosition(clickX, clickY);
+    if (ball) {
+      const preset = ball.preset || 'custom';
+      const ballDensity = ball.mass / (Math.PI * ball.radiusM * ball.radiusM);
+
+      infoDiv.innerHTML = `
+        <b>Preset:</b> ${preset}<br>
+        <b>Mass:</b> ${ball.mass.toFixed(3)} kg<br>
+        <b>Radius:</b> ${ball.radiusM.toFixed(3)} m<br>
+        <b>Density:</b> ${ballDensity.toFixed(3)} kg/m³
+      `;
+    } else {
+      infoDiv.innerHTML = 'No ball selected.';
+    }
+  });
+}
+
+
 
 // Initializes canvas, control syncing, event listeners, and starts the animation loop
 function initialize() {
   initializeCanvas(); // Prepare canvas
   syncControls(); // Connect UI sliders and dropdowns
+  setupBallClickHandler();
+  const canvas = document.getElementById('myCanvas');
+  canvas.tabIndex = 1; // Make it focusable
+   // Only focus when user clicks canvas (optional)
+  canvas.addEventListener('click', () => {
+    canvas.focus();
+  });
   document.getElementById('btn').addEventListener('click', handleSpawnBall); // Button handler
   requestAnimationFrame(update); // Start simulation
   handleSpawnBall(); // Add first object immediately

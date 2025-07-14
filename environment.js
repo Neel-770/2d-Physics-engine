@@ -2,7 +2,7 @@
 // Think of this as the "world manager" - it knows about boundaries and how to draw things
 
 import { PHYSICS_CONFIG } from './shared.js';
-
+import { clearAllBalls } from './objects.js';
 // --- Canvas Management ---
 let canvas;
 let ctx;
@@ -284,3 +284,8 @@ export function getMaterialSelection() {
     const materialSelect = document.getElementById('materialSelect');
     return materialSelect.value;
 }
+
+let clr_canv=document.getElementById('clr_canv')
+clr_canv.addEventListener('click',()=>{
+    clearAllBalls()
+})
